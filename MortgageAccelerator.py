@@ -161,15 +161,6 @@ with col_summary:
         f"</p></div>"
     )
     st.markdown(summary_html, unsafe_allow_html=True)
-        f"""<div style='padding:10px; background:#e5fbe5; border-radius:10px; margin-top:10px'>
-        <h6 style='margin-bottom:5px;'>Summary</h6>
-        <p style='margin:0'>
-        Loan: <b>${loan_amount:,.0f}</b><br>
-        Down Payment: <b>${down_payment:,.0f}</b><br>
-        Payment/Period: <b style='color:red;'>${payment:,.2f}</b>
-        </p>
-        </div>""",
-        unsafe_allow_html=True
     )
 
 # --- Output ---
@@ -199,5 +190,4 @@ with tabs[1]:
     st.dataframe(schedule_df.head(50))
     csv = schedule_df.to_csv(index=False).encode('utf-8')
     st.download_button("📥 Download Full Schedule as CSV", data=csv, file_name="amortization_schedule.csv", mime="text/csv")
-
 
