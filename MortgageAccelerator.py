@@ -3,7 +3,7 @@ import math
 import matplotlib.pyplot as plt
 import pandas as pd
 
-st.set_page_config(page_title="Mortgage Accelerator", layout="wide")
+st.set_page_config(page_title="Mortgage Accelerator", layout="centered")
 st.markdown("<h5 style='text-align:center; margin-top:-40px;'>Mortgage Calculator Maximizer</h5>", unsafe_allow_html=True)
 
 # --- Tabs for Navigation ---
