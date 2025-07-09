@@ -151,7 +151,7 @@ schedule_df = pd.DataFrame(schedule, columns=["Payment #", "Remaining Balance", 
 
 with col_summary:
     st.markdown(
-        f"""<div style='padding:10px; background:#f1f3f6; border-radius:10px; margin-top:10px'>
+        f"""<div style='padding:10px; background:#e5fbe5; border-radius:10px; margin-top:10px'>
         <h6 style='margin-bottom:5px;'>Summary</h6>
         <p style='margin:0'>
         Loan: <b>${loan_amount:,.0f}</b><br>
@@ -189,3 +189,4 @@ with tabs[1]:
     st.dataframe(schedule_df.head(50))
     csv = schedule_df.to_csv(index=False).encode('utf-8')
     st.download_button("📥 Download Full Schedule as CSV", data=csv, file_name="amortization_schedule.csv", mime="text/csv")
+
