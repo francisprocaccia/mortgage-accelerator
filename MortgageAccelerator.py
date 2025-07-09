@@ -22,7 +22,7 @@ with tabs[0]:
     # --- Inputs ---
     with st.container():
         st.markdown("<h6>Loan Parameters</h6>", unsafe_allow_html=True)
-        col1, col2 = st.columns(2)
+        col1, col2, col_summary = st.columns([1, 1, 1.2])
 
         with col1:
             home_price = st.number_input("Home Price ($)", min_value=0.0, value=500000.0, step=1000.0)
@@ -41,6 +41,16 @@ with tabs[0]:
             else:
                 custom_days = 30
             user_payment = st.number_input("Your Desired Base Payment ($)", min_value=0.0, value=0.0, key='user_payment') if lock_payment else None
+
+    with col_summary:
+        st.markdown(
+            """<div style='padding:10px; background:#f1f3f6; border-radius:10px; margin-top:10px'>
+            <h6 style='margin-bottom:5px;'>Summary</h6>
+            <p style='margin:0'>Loan: <b>${loan_amount:,.0f}</b><br>
+            Down: <b>${down_payment:,.0f}</b><br>
+            Pay/Period: <b style='color:orange;'>${payment:,.2f}</b></p>
+            </div>""", unsafe_allow_html=True
+        )
 
     with st.container():
         st.markdown("<h6>Taxes & Extras</h6>", unsafe_allow_html=True)
@@ -63,11 +73,19 @@ annual_rate = interest_rate / 100
 
 if payment_frequency == "Monthly":
     payments_per_year = 12
+    frequency_label = "Monthly"
 elif payment_frequency == "Bi-Weekly":
     payments_per_year = 26
+    frequency_label = "Bi-Weekly"
 elif payment_frequency == "Weekly":
     payments_per_year = 52
+    frequency_label = "Weekly"
+elif payment_frequency == "Every X Days":
+    payments_per_year = 365 / custom_days if custom_days > 0 else 12
+    frequency_label = f"Every {custom_days} Days"
 else:
+    payments_per_year = 12
+    frequency_label = "Monthly"
     payments_per_year = 365 / custom_days
 
 period_rate = annual_rate / payments_per_year if annual_rate > 0 else 0
@@ -146,7 +164,7 @@ with tabs[0]:
     st.write(f"**Loan Amount:** ${loan_amount:,.2f}")
     st.write(f"**Down Payment:** ${down_payment:,.2f}")
     st.write(f"**Base Payment per Period:** ${payment:,.2f}")
-    st.write(f"**Total Payment per {payment_frequency.replace('Every X Days', f'{custom_days}-Day Period')} (Incl. Taxes & Extras):** ${total_payment:,.2f}")
+    st.write(f"**Total Payment per {frequency_label} (Incl. Taxes & Extras):** ${total_payment:,.2f}")
     if extra_payment > 0:
         st.write(f"**Time Saved by Extra Payments:** {months_saved/payments_per_year:.2f} years")
         st.write(f"**Interest Saved:** ${schedule_df['Cumulative Interest'].iloc[-1]:,.2f}")
