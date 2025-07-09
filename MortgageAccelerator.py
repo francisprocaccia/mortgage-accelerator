@@ -42,18 +42,7 @@ with tabs[0]:
                 custom_days = 30
             user_payment = st.number_input("Your Desired Base Payment ($)", min_value=0.0, value=0.0, key='user_payment') if lock_payment else None
 
-    with col_summary:
-        st.markdown(
-    f"""<div style='padding:10px; background:#f1f3f6; border-radius:10px; margin-top:10px'>
-    <h6 style='margin-bottom:5px;'>Summary</h6>
-    <p style='margin:0'>
-    Loan: <b>${loan_amount:,.0f}</b><br>
-    Down Payment: <b>${down_payment:,.0f}</b><br>
-    Payment/Period: <b style='color:orange;'>${payment:,.2f}</b>
-    </p>
-    </div>""",
-    unsafe_allow_html=True
-)
+    
 
     with st.container():
         st.markdown("<h6>Taxes & Extras</h6>", unsafe_allow_html=True)
@@ -159,6 +148,19 @@ for i in range(1, total_payments + 1):
         break
 
 schedule_df = pd.DataFrame(schedule, columns=["Payment #", "Remaining Balance", "Cumulative Interest"])
+
+with col_summary:
+    st.markdown(
+        f"""<div style='padding:10px; background:#f1f3f6; border-radius:10px; margin-top:10px'>
+        <h6 style='margin-bottom:5px;'>Summary</h6>
+        <p style='margin:0'>
+        Loan: <b>${loan_amount:,.0f}</b><br>
+        Down Payment: <b>${down_payment:,.0f}</b><br>
+        Payment/Period: <b style='color:orange;'>${payment:,.2f}</b>
+        </p>
+        </div>""",
+        unsafe_allow_html=True
+    )
 
 # --- Output ---
 with tabs[0]:
