@@ -44,11 +44,16 @@ with tabs[0]:
 
     with col_summary:
         st.markdown(
-            """<div style='padding:10px; background:#f1f3f6; border-radius:10px; margin-top:10px'>
-            <h6 style='margin-bottom:5px;'>Summary</h6>
-            <p style='margin:0'>Loan: <b>${loan_amount:,.0f}</b><br>Down Payment: <b>${down_payment:,.0f}</b><br>Payment/Period: <b style='color:orange;'>${payment:,.2f}</b></p>
-            </div>""", unsafe_allow_html=True
-        )
+    f"""<div style='padding:10px; background:#f1f3f6; border-radius:10px; margin-top:10px'>
+    <h6 style='margin-bottom:5px;'>Summary</h6>
+    <p style='margin:0'>
+    Loan: <b>${loan_amount:,.0f}</b><br>
+    Down Payment: <b>${down_payment:,.0f}</b><br>
+    Payment/Period: <b style='color:orange;'>${payment:,.2f}</b>
+    </p>
+    </div>""",
+    unsafe_allow_html=True
+)
 
     with st.container():
         st.markdown("<h6>Taxes & Extras</h6>", unsafe_allow_html=True)
