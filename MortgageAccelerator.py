@@ -82,6 +82,18 @@ if lock_payment and user_payment and user_payment > 0:
     total_payments = int(calculate_term(loan_amount, period_rate, user_payment))
     payment = user_payment
     loan_term_years = total_payments / payments_per_year
+
+elif lock_frequency:
+    # Recalculate frequency instead of term
+    if loan_term_years > 0:
+        total_payments = int(loan_term_years * payments_per_year)
+        if period_rate > 0:
+            payment = loan_amount * (period_rate * (1 + period_rate) ** total_payments) / ((1 + period_rate) ** total_payments - 1)
+        else:
+            payment = loan_amount / total_payments
+    else:
+        total_payments = 0
+        payment = 0
 else:
     total_payments = int(loan_term_years * payments_per_year)
     if period_rate > 0:
@@ -154,3 +166,4 @@ with tabs[1]:
     st.dataframe(schedule_df.head(50))
     csv = schedule_df.to_csv(index=False).encode('utf-8')
     st.download_button("📥 Download Full Schedule as CSV", data=csv, file_name="amortization_schedule.csv", mime="text/csv")
+
