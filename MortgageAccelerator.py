@@ -11,7 +11,7 @@ tabs = st.tabs(["📊 Calculator", "📅 Amortization Schedule"])
 
 with tabs[0]:
     with st.expander("⚙️ Advanced Options", expanded=False):
-    col_adv1, col_adv2 = st.columns(2)
+        col_adv1, col_adv2 = st.columns(2)
     with col_adv1:
         lock_payment = st.checkbox("Lock Payment Amount", value=False)
     with col_adv2:
@@ -166,4 +166,3 @@ with tabs[1]:
     st.dataframe(schedule_df.head(50))
     csv = schedule_df.to_csv(index=False).encode('utf-8')
     st.download_button("📥 Download Full Schedule as CSV", data=csv, file_name="amortization_schedule.csv", mime="text/csv")
-
