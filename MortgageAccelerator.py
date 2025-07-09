@@ -161,7 +161,6 @@ with col_summary:
         f"</p></div>"
     )
     st.markdown(summary_html, unsafe_allow_html=True)
-    )
 
 # --- Output ---
 with tabs[0]:
