@@ -3,38 +3,48 @@ import math
 import matplotlib.pyplot as plt
 import pandas as pd
 
-st.set_page_config(page_title="Mortgage Accelerator", layout="centered")
+st.set_page_config(page_title="Mortgage Accelerator", layout="wide")
 st.title("Mortgage Calculator Maximizer")
 
 st.markdown("**Tip:** To test what-if scenarios, check the box below to lock a variable and enter your desired payment.")
 lock_payment = st.checkbox("Lock Payment Amount and Recalculate Loan Term")
 
 # --- Inputs ---
-col1, col2 = st.columns(2)
+with st.container():
+    st.markdown("### Basic Loan Parameters")
+    col1, col2 = st.columns(2)
 
-with col1:
-    home_price = st.number_input("Home Price ($)", min_value=0.0, value=500000.0, step=1000.0)
-    down_percent = st.slider("Down Payment (%)", 0.0, 100.0, value=20.0, step=0.1)
-    if lock_payment:
-        loan_term_years = st.number_input("Loan Term (Years)", min_value=1, max_value=50, value=30, disabled=True)
-    else:
-        loan_term_years = st.number_input("Loan Term (Years)", min_value=1, max_value=50, value=30)
-    interest_rate = st.number_input("Interest Rate (%)", min_value=0.0, max_value=25.0, value=3.0, step=0.1)
-    freq_options = ["Monthly", "Bi-Weekly", "Weekly", "Every X Days"]
-    payment_frequency = st.selectbox("Payment Frequency", freq_options)
-    if payment_frequency == "Every X Days":
-        custom_days = st.number_input("Custom Days", min_value=1, max_value=365, value=30)
-    else:
-        custom_days = 30  # Default fallback value
+    with col1:
+        home_price = st.number_input("Home Price ($)", min_value=0.0, value=500000.0, step=1000.0)
+        down_percent = st.slider("Down Payment (%)", 0.0, 100.0, value=20.0, step=0.1)
+        if lock_payment:
+            loan_term_years = st.number_input("Loan Term (Years)", min_value=1, max_value=50, value=30, disabled=True)
+        else:
+            loan_term_years = st.number_input("Loan Term (Years)", min_value=1, max_value=50, value=30)
+        interest_rate = st.number_input("Interest Rate (%)", min_value=0.0, max_value=25.0, value=3.0, step=0.1)
 
-with col2:
-    property_tax_percent = st.number_input("Property Tax (%)", min_value=0.0, value=1.2)
-    hoa = st.number_input("HOA ($/month)", min_value=0.0, value=0.0)
-    insurance = st.number_input("Home Insurance ($/year)", min_value=0.0, value=1200.0)
-    pmi_percent = st.number_input("PMI (%)", min_value=0.0, value=0.0)
-    extra_payment = st.number_input("Extra Payment ($)", min_value=0.0, value=0.0)
-    extra_freq = st.selectbox("Extra Payment Frequency", freq_options)
-    user_payment = st.number_input("Your Desired Base Payment ($)", min_value=0.0, value=0.0) if lock_payment else None
+    with col2:
+        freq_options = ["Monthly", "Bi-Weekly", "Weekly", "Every X Days"]
+        payment_frequency = st.selectbox("Payment Frequency", freq_options)
+        if payment_frequency == "Every X Days":
+            custom_days = st.number_input("Custom Days", min_value=1, max_value=365, value=30)
+        else:
+            custom_days = 30
+        user_payment = st.number_input("Your Desired Base Payment ($)", min_value=0.0, value=0.0) if lock_payment else None
+
+with st.container():
+    st.markdown("### Taxes, Insurance, and Extras")
+    col3, col4 = st.columns(2)
+
+    with col3:
+        property_tax_percent = st.number_input("Property Tax (%)", min_value=0.0, value=1.2)
+        hoa = st.number_input("HOA ($/month)", min_value=0.0, value=0.0)
+        insurance = st.number_input("Home Insurance ($/year)", min_value=0.0, value=1200.0)
+
+    with col4:
+        pmi_percent = st.number_input("PMI (%)", min_value=0.0, value=0.0)
+        extra_payment = st.number_input("Extra Payment ($)", min_value=0.0, value=0.0)
+        extra_freq = st.selectbox("Extra Payment Frequency", freq_options)
 
 # --- Computation ---
 down_payment = home_price * (down_percent / 100)
@@ -53,7 +63,6 @@ else:
 period_rate = annual_rate / payments_per_year if annual_rate > 0 else 0
 
 if lock_payment and user_payment and user_payment > 0:
-    # Recalculate loan term from payment amount
     def calculate_term(P, r, A):
         if r == 0:
             return P / A
@@ -121,13 +130,16 @@ if extra_payment > 0:
 if lock_payment:
     st.write(f"**Calculated Loan Term for Desired Payment:** {loan_term_years:.2f} years")
 
-# Plot amortization chart
-st.markdown("---")
-st.subheader("Amortization Schedule")
-fig, ax = plt.subplots()
-ax.plot(schedule_df["Payment #"], schedule_df["Remaining Balance"], label="Remaining Balance")
-ax.set_xlabel("Payment Number")
-ax.set_ylabel("Balance ($)")
-ax.set_title("Loan Balance Over Time")
-ax.grid(True)
-st.pyplot(fig)
+# Collapsible Amortization Tab
+with st.expander("📉 View Amortization Chart and Table"):
+    st.subheader("Amortization Schedule")
+    fig, ax = plt.subplots()
+    ax.plot(schedule_df["Payment #"], schedule_df["Remaining Balance"], label="Remaining Balance")
+    ax.set_xlabel("Payment Number")
+    ax.set_ylabel("Balance ($)")
+    ax.set_title("Loan Balance Over Time")
+    ax.grid(True)
+    st.pyplot(fig)
+    st.dataframe(schedule_df.head(50))
+    csv = schedule_df.to_csv(index=False).encode('utf-8')
+    st.download_button("📥 Download Full Schedule as CSV", data=csv, file_name="amortization_schedule.csv", mime="text/csv")
