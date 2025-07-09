@@ -31,7 +31,7 @@ with tabs[0]:
                 loan_term_years = st.number_input("Loan Term (Years)", min_value=1, max_value=50, value=30, disabled=True)
             else:
                 loan_term_years = st.number_input("Loan Term (Years)", min_value=1, max_value=50, value=30)
-            interest_rate = st.number_input("Interest Rate (%)", min_value=0.0, max_value=25.0, value=3.0, step=0.1)
+            interest_rate = st.number_input("Interest Rate (%)", min_value=0.0, max_value=25.0, value=3.0, step=0.001, format="%.3f")
 
         with col2:
             freq_options = ["Monthly", "Bi-Weekly", "Weekly", "Every X Days"]
@@ -203,3 +203,4 @@ with tabs[1]:
     st.dataframe(schedule_df.head(50))
     csv = schedule_df.to_csv(index=False).encode('utf-8')
     st.download_button("📥 Download Full Schedule as CSV", data=csv, file_name="amortization_schedule.csv", mime="text/csv")
+
