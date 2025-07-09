@@ -125,7 +125,8 @@ elif extra_freq == "Bi-Weekly":
 elif extra_freq == "Weekly":
     extra_per_period = (extra_payment * 52) / payments_per_year
 elif extra_freq == "Every X Days":
-    extra_per_period = (extra_payment * (365 / custom_days)) / payments_per_year
+    extra_payments_per_year = 365 / custom_days if custom_days > 0 else 0
+    extra_per_period = (extra_payment * extra_payments_per_year) / payments_per_year
 else:
     extra_per_period = extra_payment
 
@@ -169,7 +170,7 @@ with tabs[0]:
     st.write(f"**Loan Amount:** ${loan_amount:,.2f}")
     st.write(f"**Down Payment:** ${down_payment:,.2f}")
     st.write(f"**Base Payment per Period:** ${payment:,.2f}")
-    st.write(f"**Total Payment per {frequency_label} (Incl. Taxes & Extras):** ${total_payment:,.2f}")
+    st.markdown(f"**Total Payment per {frequency_label} (Incl. Taxes & Extras):** <span style='color:red;'>${total_payment:,.2f}</span>", unsafe_allow_html=True)
     if extra_payment > 0:
         st.write(f"**Time Saved by Extra Payments:** {months_saved/payments_per_year:.2f} years")
         st.write(f"**Interest Saved:** ${schedule_df['Cumulative Interest'].iloc[-1]:,.2f}")
@@ -189,4 +190,3 @@ with tabs[1]:
     st.dataframe(schedule_df.head(50))
     csv = schedule_df.to_csv(index=False).encode('utf-8')
     st.download_button("📥 Download Full Schedule as CSV", data=csv, file_name="amortization_schedule.csv", mime="text/csv")
-
