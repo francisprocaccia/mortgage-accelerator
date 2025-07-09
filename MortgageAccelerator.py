@@ -138,11 +138,17 @@ else:
 total_payment = payment + tax_per_period + insurance_per_period + hoa_per_period + pmi_per_period + extra_per_period
 
 # Amortization Table with Extra Payments
+from datetime import date, timedelta
+start_date = date.today()
+payment_interval_days = int(365 / payments_per_year)
 balance = loan_amount
 schedule = []
+payment_dates = []
 interest_paid = 0
 months_saved = 0
 for i in range(1, total_payments + 1):
+    payment_date = start_date + timedelta(days=(i - 1) * payment_interval_days)
+    payment_dates.append(payment_date)
     interest = balance * period_rate
     principal = payment - interest
     total_principal = principal + extra_per_period
@@ -154,6 +160,7 @@ for i in range(1, total_payments + 1):
         break
 
 schedule_df = pd.DataFrame(schedule, columns=["Payment #", "Remaining Balance", "Cumulative Interest"])
+schedule_df.insert(1, "Payment Date", payment_dates)
 
 with col_summary:
     summary_html = (
@@ -173,6 +180,8 @@ with tabs[0]:
     st.markdown("<h6>Summary</h6>", unsafe_allow_html=True)
     st.write(f"**Loan Amount:** ${loan_amount:,.2f}")
     st.write(f"**Down Payment:** ${down_payment:,.2f}")
+    st.write(f"**Start Date:** {start_date.strftime('%b %d, %Y')}")
+    st.write(f"**End Date:** {payment_dates[-1].strftime('%b %d, %Y') if payment_dates else 'N/A'}")
     st.write(f"**Base Payment per Period:** ${payment:,.2f}")
     st.markdown(f"**Total Payment per {frequency_label} (Incl. Taxes & Extras):** <span style='color:red;'>${total_payment:,.2f}</span>", unsafe_allow_html=True)
     if extra_payment > 0:
@@ -194,4 +203,3 @@ with tabs[1]:
     st.dataframe(schedule_df.head(50))
     csv = schedule_df.to_csv(index=False).encode('utf-8')
     st.download_button("📥 Download Full Schedule as CSV", data=csv, file_name="amortization_schedule.csv", mime="text/csv")
-
