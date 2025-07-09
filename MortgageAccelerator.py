@@ -200,6 +200,6 @@ with tabs[1]:
     ax.set_title("Loan Balance Over Time")
     ax.grid(True)
     st.pyplot(fig)
-    st.dataframe(schedule_df)
+    st.dataframe(schedule_df, height=1000)
     csv = schedule_df.to_csv(index=False).encode('utf-8')
     st.download_button("📥 Download Full Schedule as CSV", data=csv, file_name="amortization_schedule.csv", mime="text/csv")
