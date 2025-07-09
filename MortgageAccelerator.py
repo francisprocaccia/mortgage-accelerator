@@ -4,18 +4,24 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 st.set_page_config(page_title="Mortgage Accelerator", layout="wide")
-st.markdown("<h3 style='text-align: center;'>Mortgage Calculator Maximizer</h3>", unsafe_allow_html=True)
+st.markdown("<h5 style='text-align:center; margin-top:-40px;'>Mortgage Calculator Maximizer</h5>", unsafe_allow_html=True)
 
 # --- Tabs for Navigation ---
 tabs = st.tabs(["📊 Calculator", "📅 Amortization Schedule"])
 
 with tabs[0]:
-    st.markdown("**Tip:** To test what-if scenarios, check the box below to lock a variable and enter your desired payment.")
-    lock_payment = st.checkbox("Lock Payment Amount and Recalculate Loan Term")
+    with st.expander("⚙️ Advanced Options", expanded=False):
+    col_adv1, col_adv2 = st.columns(2)
+    with col_adv1:
+        lock_payment = st.checkbox("Lock Payment Amount", value=False)
+    with col_adv2:
+        lock_frequency = st.checkbox("Lock Payment Frequency", value=False, disabled=lock_payment)
+    if lock_frequency:
+        lock_payment = False
 
     # --- Inputs ---
     with st.container():
-        st.markdown("### Basic Loan Parameters")
+        st.markdown("<h6>Loan Parameters</h6>", unsafe_allow_html=True)
         col1, col2 = st.columns(2)
 
         with col1:
@@ -34,10 +40,10 @@ with tabs[0]:
                 custom_days = st.number_input("Custom Days", min_value=1, max_value=365, value=30)
             else:
                 custom_days = 30
-            user_payment = st.number_input("Your Desired Base Payment ($)", min_value=0.0, value=0.0) if lock_payment else None
+            user_payment = st.number_input("Your Desired Base Payment ($)", min_value=0.0, value=0.0, key='user_payment') if lock_payment else None
 
     with st.container():
-        st.markdown("### Taxes, Insurance, and Extras")
+        st.markdown("<h6>Taxes & Extras</h6>", unsafe_allow_html=True)
         col3, col4 = st.columns(2)
 
         with col3:
@@ -124,7 +130,7 @@ schedule_df = pd.DataFrame(schedule, columns=["Payment #", "Remaining Balance", 
 # --- Output ---
 with tabs[0]:
     st.markdown("---")
-    st.subheader("Summary")
+    st.markdown("<h6>Summary</h6>", unsafe_allow_html=True)
     st.write(f"**Loan Amount:** ${loan_amount:,.2f}")
     st.write(f"**Down Payment:** ${down_payment:,.2f}")
     st.write(f"**Base Payment per Period:** ${payment:,.2f}")
@@ -137,7 +143,7 @@ with tabs[0]:
 
 # --- Amortization Tab ---
 with tabs[1]:
-    st.subheader("Amortization Schedule")
+    st.markdown("<h6>Amortization Schedule</h6>", unsafe_allow_html=True)
     fig, ax = plt.subplots()
     ax.plot(schedule_df["Payment #"], schedule_df["Remaining Balance"], label="Remaining Balance")
     ax.set_xlabel("Payment Number")
