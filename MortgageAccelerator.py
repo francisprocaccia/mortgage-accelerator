@@ -57,11 +57,7 @@ with tabs[0]:
             pmi_percent = st.number_input("PMI (%)", min_value=0.0, value=0.0)
             extra_payment = st.number_input("Extra Payment ($)", min_value=0.0, value=0.0)
             extra_freq = st.selectbox("Extra Payment Frequency", freq_options)
-
-if extra_freq == "Every X Days":
-    extra_custom_days = st.number_input("Extra Payment Custom Days", min_value=1, max_value=365, value=30)
-else:
-    extra_custom_days = None
+            
 
 # --- Computation ---
 down_payment = home_price * (down_percent / 100)
