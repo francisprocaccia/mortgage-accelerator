@@ -169,7 +169,7 @@ with col_summary:
         f"<p style='margin:0'>"
         f"Loan: <b>${loan_amount:,.0f}</b><br>"
         f"Down Payment: <b>${down_payment:,.0f}</b><br>"
-        f"Payment/Period: <b style='color:red;'>${payment:,.2f}</b>"
+        f"Payment/Period: <b style='color:red;'>${payment:,.2f}</b><br>End Date: <b>{payment_dates[-1].strftime('%b %d, %Y') if payment_dates else 'N/A'}</b>"
         f"</p></div>"
     )
     st.markdown(summary_html, unsafe_allow_html=True)
@@ -200,7 +200,6 @@ with tabs[1]:
     ax.set_title("Loan Balance Over Time")
     ax.grid(True)
     st.pyplot(fig)
-    st.dataframe(schedule_df.head(50))
+    st.dataframe(schedule_df)
     csv = schedule_df.to_csv(index=False).encode('utf-8')
     st.download_button("📥 Download Full Schedule as CSV", data=csv, file_name="amortization_schedule.csv", mime="text/csv")
-
