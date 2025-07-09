@@ -57,6 +57,10 @@ with tabs[0]:
             pmi_percent = st.number_input("PMI (%)", min_value=0.0, value=0.0)
             extra_payment = st.number_input("Extra Payment ($)", min_value=0.0, value=0.0)
             extra_freq = st.selectbox("Extra Payment Frequency", freq_options)
+            if extra_freq == "Every X Days":
+                extra_custom_days = st.number_input("Extra Payment Custom Days", min_value=1, max_value=365, value=30)
+            else:
+                extra_custom_days = 30
             
 
 # --- Computation ---
@@ -190,5 +194,4 @@ with tabs[1]:
     st.dataframe(schedule_df.head(50))
     csv = schedule_df.to_csv(index=False).encode('utf-8')
     st.download_button("📥 Download Full Schedule as CSV", data=csv, file_name="amortization_schedule.csv", mime="text/csv")
-
 
