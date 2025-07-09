@@ -157,7 +157,7 @@ with col_summary:
         <p style='margin:0'>
         Loan: <b>${loan_amount:,.0f}</b><br>
         Down Payment: <b>${down_payment:,.0f}</b><br>
-        Payment/Period: <b style='color:orange;'>${payment:,.2f}</b>
+        Payment/Period: <b style='color:red;'>${pa
         </p>
         </div>""",
         unsafe_allow_html=True
@@ -190,3 +190,4 @@ with tabs[1]:
     st.dataframe(schedule_df.head(50))
     csv = schedule_df.to_csv(index=False).encode('utf-8')
     st.download_button("📥 Download Full Schedule as CSV", data=csv, file_name="amortization_schedule.csv", mime="text/csv")
+
